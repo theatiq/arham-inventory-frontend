@@ -28,6 +28,7 @@ const Navbar = () => {
       <Link to="/products">Products</Link>
       <Link to="/movements">Movements</Link>
       <Link to="/reports">Reports</Link>
+      <Link to="/about">About</Link>
     </nav>
   );
 };

@@ -22,6 +22,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Movements from "./pages/Movements";
 import Reports from "./pages/Reports";
+import About from "./pages/About";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/movements" element={<Movements />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/about" element={<About/>} />
         </Routes>
       </div>
     </div>
