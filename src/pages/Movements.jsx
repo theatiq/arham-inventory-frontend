@@ -250,8 +250,103 @@
 
 // export default Movements;
 
+// for mobile camera usage
+
+// import React, { useState } from "react";
+// import BarcodeScanner from "./BarcodeScanner";
+
+// function Movements() {
+//   const [formData, setFormData] = useState({
+//     productId: "",
+//     name: "",
+//     price: "",
+//     quantity: "",
+//     company: "",
+//     barcode: "",
+//   });
+
+//   const handleScan = (product) => {
+//     setFormData({
+//       productId: product.productId,
+//       name: product.name,
+//       price: product.price,
+//       quantity: product.quantity,
+//       company: product.company,
+//       barcode: product.barcode,
+//     });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     await fetch("http://localhost:4000/api/products", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(formData),
+//     });
+//     alert("✅ Product saved!");
+//   };
+
+//   return (
+//     <div className="p-6">
+//       <h1 className="text-xl font-bold mb-4">📦 Add Product via Barcode</h1>
+
+//       <BarcodeScanner onScan={handleScan} />
+
+//       <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.productId}
+//           onChange={(e) =>
+//             setFormData({ ...formData, productId: e.target.value })
+//           }
+//           placeholder="Product ID"
+//         />
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.name}
+//           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+//           placeholder="Product Name"
+//         />
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.price}
+//           onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+//           placeholder="Price"
+//         />
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.quantity}
+//           onChange={(e) =>
+//             setFormData({ ...formData, quantity: e.target.value })
+//           }
+//           placeholder="Quantity"
+//         />
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.company}
+//           onChange={(e) =>
+//             setFormData({ ...formData, company: e.target.value })
+//           }
+//           placeholder="Company"
+//         />
+//         <input
+//           className="border p-2 w-full"
+//           value={formData.barcode}
+//           onChange={(e) =>
+//             setFormData({ ...formData, barcode: e.target.value })
+//           }
+//           placeholder="Barcode"
+//         />
+//         <button className="bg-blue-600 text-white px-4 py-2 rounded">
+//           Save
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+
+// export default Movements;
 import React, { useState } from "react";
-import BarcodeScanner from "./BarcodeScanner";
 
 function Movements() {
   const [formData, setFormData] = useState({
@@ -263,15 +358,16 @@ function Movements() {
     barcode: "",
   });
 
-  const handleScan = (product) => {
-    setFormData({
-      productId: product.productId,
-      name: product.name,
-      price: product.price,
-      quantity: product.quantity,
-      company: product.company,
-      barcode: product.barcode,
-    });
+  const handleScan = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      try {
+        const product = JSON.parse(e.target.value); // assuming barcode encodes JSON
+        setFormData(product);
+      } catch {
+        setFormData({ ...formData, barcode: e.target.value }); // fallback if just numeric barcode
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -286,58 +382,27 @@ function Movements() {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">📦 Add Product via Barcode</h1>
+      <h1 className="text-xl font-bold mb-4">📦 Add Product (USB Scanner)</h1>
 
-      <BarcodeScanner onScan={handleScan} />
+      {/* Scanner Input */}
+      <input
+        type="text"
+        onKeyDown={handleScan}
+        placeholder="Scan barcode here"
+        className="border p-2 w-full mb-4"
+        autoFocus
+      />
 
-      <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-        <input
-          className="border p-2 w-full"
-          value={formData.productId}
-          onChange={(e) =>
-            setFormData({ ...formData, productId: e.target.value })
-          }
-          placeholder="Product ID"
-        />
-        <input
-          className="border p-2 w-full"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Product Name"
-        />
-        <input
-          className="border p-2 w-full"
-          value={formData.price}
-          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-          placeholder="Price"
-        />
-        <input
-          className="border p-2 w-full"
-          value={formData.quantity}
-          onChange={(e) =>
-            setFormData({ ...formData, quantity: e.target.value })
-          }
-          placeholder="Quantity"
-        />
-        <input
-          className="border p-2 w-full"
-          value={formData.company}
-          onChange={(e) =>
-            setFormData({ ...formData, company: e.target.value })
-          }
-          placeholder="Company"
-        />
-        <input
-          className="border p-2 w-full"
-          value={formData.barcode}
-          onChange={(e) =>
-            setFormData({ ...formData, barcode: e.target.value })
-          }
-          placeholder="Barcode"
-        />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
-          Save
-        </button>
+      {/* Form (auto-filled after scan) */}
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input className="border p-2 w-full" value={formData.productId} placeholder="Product ID" readOnly />
+        <input className="border p-2 w-full" value={formData.name} placeholder="Name" readOnly />
+        <input className="border p-2 w-full" value={formData.price} placeholder="Price" readOnly />
+        <input className="border p-2 w-full" value={formData.quantity} placeholder="Quantity" readOnly />
+        <input className="border p-2 w-full" value={formData.company} placeholder="Company" readOnly />
+        <input className="border p-2 w-full" value={formData.barcode} placeholder="Barcode" readOnly />
+
+        <button className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
       </form>
     </div>
   );
