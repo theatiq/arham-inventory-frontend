@@ -14,7 +14,6 @@
 
 // export default App;
 
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -23,6 +22,8 @@ import Products from "./pages/Products";
 import Movements from "./pages/Movements";
 import Reports from "./pages/Reports";
 import About from "./pages/About";
+import BarcodeScanner from "./pages/BarcodeScanner";
+import BarcodeGenerator from "./components/BarcodeGenerator";
 
 const App = () => {
   return (
@@ -33,8 +34,9 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/movements" element={<Movements />} />
+          <Route path="/barGen" element={<BarcodeGenerator />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/about" element={<About/>} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
     </div>
