@@ -346,6 +346,87 @@
 // }
 
 // export default Movements;
+// import
+
+// Testing Dummy Products
+// import React, { useState } from "react";
+
+// function Movements() {
+//   const [scanValue, setScanValue] = useState("");
+//   const [formData, setFormData] = useState(null);
+
+//   const handleKeyDown = (e) => {
+//     if (e.key === "Enter") {
+//       e.preventDefault();
+
+//       // Example: Normally scanner sends only barcode value, here we add fake product
+//       const product = {
+//         productId: Date.now().toString(), // unique id
+//         name: "Test Product",
+//         price: "120",
+//         quantity: "5",
+//         company: "Demo Inc",
+//         barcode: scanValue,
+//       };
+
+//       setFormData(product);
+//       setScanValue(""); // reset scanner input
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!formData) return alert("⚠️ Please scan first!");
+
+//     await fetch("http://localhost:4000/api/products", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(formData),
+//     });
+
+//     alert("✅ Product saved!");
+//     setFormData(null); // reset after save
+//   };
+
+//   return (
+//     <div className="p-6">
+//       <h1 className="text-xl font-bold mb-4">📦 Test Barcode Scanner</h1>
+
+//       {/* Scanner input */}
+//       <input
+//         type="text"
+//         value={scanValue}
+//         onChange={(e) => setScanValue(e.target.value)}
+//         onKeyDown={handleKeyDown}
+//         placeholder="Scan barcode here..."
+//         className="border p-2 w-full mb-4"
+//         autoFocus
+//       />
+
+//       {/* Show scanned product preview */}
+//       {formData && (
+//         <div className="border p-3 mb-4">
+//           <p><strong>ID:</strong> {formData.productId}</p>
+//           <p><strong>Name:</strong> {formData.name}</p>
+//           <p><strong>Price:</strong> {formData.price}</p>
+//           <p><strong>Quantity:</strong> {formData.quantity}</p>
+//           <p><strong>Company:</strong> {formData.company}</p>
+//           <p><strong>Barcode:</strong> {formData.barcode}</p>
+//         </div>
+//       )}
+
+//       <button
+//         onClick={handleSubmit}
+//         className="bg-blue-600 text-white px-4 py-2 rounded"
+//       >
+//         Save
+//       </button>
+//     </div>
+//   );
+// }
+
+// export default Movements;
+
 import React, { useState } from "react";
 
 function Movements() {
@@ -358,15 +439,22 @@ function Movements() {
     barcode: "",
   });
 
+  const [scanValue, setScanValue] = useState("");
+
   const handleScan = (e) => {
+    setScanValue(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       try {
-        const product = JSON.parse(e.target.value); // assuming barcode encodes JSON
+        const product = JSON.parse(scanValue); // if your barcode encodes JSON
         setFormData(product);
       } catch {
-        setFormData({ ...formData, barcode: e.target.value }); // fallback if just numeric barcode
+        setFormData({ ...formData, barcode: scanValue });
       }
+      setScanValue(""); // reset after scan
     }
   };
 
@@ -387,13 +475,15 @@ function Movements() {
       {/* Scanner Input */}
       <input
         type="text"
-        onKeyDown={handleScan}
+        value={scanValue}
+        onChange={handleScan}
+        onKeyDown={handleKeyDown}
         placeholder="Scan barcode here"
         className="border p-2 w-full mb-4"
         autoFocus
       />
 
-      {/* Form (auto-filled after scan) */}
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <input className="border p-2 w-full" value={formData.productId} placeholder="Product ID" readOnly />
         <input className="border p-2 w-full" value={formData.name} placeholder="Name" readOnly />
